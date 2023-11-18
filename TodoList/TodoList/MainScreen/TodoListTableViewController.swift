@@ -4,7 +4,7 @@
 import UIKit
 
 final class TodoListTableViewController: UITableViewController {
-	private var taskManager: ITaskManager! // swiftlint:disable:this implicitly_unwrapped_optional
+	private var taskManager: TaskManager! // swiftlint:disable:this implicitly_unwrapped_optional
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -16,8 +16,14 @@ final class TodoListTableViewController: UITableViewController {
 	private func setup() {
 		taskManager = TaskManager()
 		let tasks = [
+			ImportantTask(title: "Do homework", taskPriority: .high, date: Date()),
+			RegularTask(title: "Do Workout", completed: true),
+			ImportantTask(title: "Write new tasks", taskPriority: .low, date: Date()),
+			RegularTask(title: "Solve 3 algorithms"),
+			ImportantTask(title: "Go shopping", taskPriority: .medium, date: Date())
 		]
-		taskManager.addTasks(tasks: tasks)
+
+		tasks.forEach { taskManager.addTask(task: $0) }
 
 		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
 	}
