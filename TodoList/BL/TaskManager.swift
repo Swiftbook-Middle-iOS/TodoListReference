@@ -10,11 +10,11 @@ import Foundation
 final class TaskManager {
 	private var taskList = [Task]()
 
-	func completedTask() -> [Task] {
+	func completedTasks() -> [Task] {
 		taskList.filter { $0.completed }
 	}
 
-	func uncompletedTask() -> [Task] {
+	func uncompletedTasks() -> [Task] {
 		taskList.filter { !$0.completed }
 	}
 
@@ -24,6 +24,10 @@ final class TaskManager {
 
 	func addTask(task: Task) {
 		taskList.append(task)
+	}
+
+	func addTasks(tasks: [Task]) {
+		taskList.append(contentsOf: tasks)
 	}
 
 	func removeTask(task: Task) {
