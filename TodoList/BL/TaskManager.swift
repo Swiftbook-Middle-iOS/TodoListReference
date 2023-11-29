@@ -7,8 +7,13 @@
 
 import Foundation
 
+/// Предоставляет список заданий.
 final class TaskManager {
 	private var taskList = [Task]()
+
+	func allTasks() -> [Task] {
+		taskList
+	}
 
 	func completedTasks() -> [Task] {
 		taskList.filter { $0.completed }
@@ -16,10 +21,6 @@ final class TaskManager {
 
 	func uncompletedTasks() -> [Task] {
 		taskList.filter { !$0.completed }
-	}
-
-	func allTasks() -> [Task] {
-		taskList
 	}
 
 	func addTask(task: Task) {

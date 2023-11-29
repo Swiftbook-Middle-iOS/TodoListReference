@@ -12,32 +12,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		willConnectTo session: UISceneSession,
 		options connectionOptions: UIScene.ConnectionOptions
 	) {
-		guard let scene = scene as? UIWindowScene else { return }
+		guard let scene = (scene as? UIWindowScene) else { return }
 		let window = UIWindow(windowScene: scene)
+
 		window.rootViewController = UINavigationController(rootViewController: assembly())
 		window.makeKeyAndVisible()
+
 		self.window = window
 	}
-}
 
-func assembly() -> UIViewController {
-	let storyboard = UIStoryboard(name: "Main", bundle: nil)
-	let viewController = storyboard.instantiateViewController(
-		withIdentifier: "TodoListTableViewController"
-	) as! TodoListTableViewController // swiftlint:disable:this force_cast
-	viewController.taskManager = buildTaskManager()
-	return viewController
-}
+	func assembly() -> UIViewController {
+		let storyboard = UIStoryboard(name: "Main", bundle: nil)
 
-func buildTaskManager() -> ITaskManager {
-	let taskManager = TaskManager()
-	let tasks = [
-		ImportantTask(title: "Do homework", date: Date(), taskPriority: .high),
-		RegularTask(title: "Do Workout", completed: true),
-		ImportantTask(title: "Write new tasks", date: Date(), taskPriority: .low),
-		RegularTask(title: "Solve 3 algorithms"),
-		ImportantTask(title: "Go shopping", date: Date(), taskPriority: .medium)
-	]
-	taskManager.addTasks(tasks: tasks)
-	return taskManager
+		let viewController = storyboard.instantiateViewController(
+			withIdentifier: "TodoListTableViewController"
+		) as! TodoListTableViewController // swiftlint:disable:this force_cast
+
+		viewController.taskManager = buildTaskManager()
+
+		return viewController
+	}
+
+	func buildTaskManager() -> ITaskManager {
+		let taskManager = OrderedTaskManager(taskManager: TaskManager())
+		let tasks = [
+			ImportantTask(title: "Do homework", date: Date(), taskPriority: .high),
+			RegularTask(title: "Do Workout", completed: true),
+			ImportantTask(title: "Write new tasks", date: Date(), taskPriority: .low),
+			RegularTask(title: "Solve 3 algorithms"),
+			ImportantTask(title: "Go shopping", date: Date(), taskPriority: .medium)
+		]
+		taskManager.addTasks(tasks: tasks)
+
+		return taskManager
+	}
 }
