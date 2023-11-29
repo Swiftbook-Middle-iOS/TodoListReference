@@ -7,43 +7,32 @@
 
 import Foundation
 
+/// Предоставляет список заданий, отсортированных по приоритету.
 final class OrderedTaskManager: ITaskManager {
-
 	private let taskManager: ITaskManager
+	private let sortMethod: (Task, Task) -> Bool = { $0 < $1 }
 
 	init(taskManager: ITaskManager) {
 		self.taskManager = taskManager
 	}
 
 	func allTasks() -> [Task] {
-		sorted(tasks: taskManager.allTasks())
+		taskManager.allTasks().sorted(by: sortMethod)
 	}
 
 	func completedTasks() -> [Task] {
-		sorted(tasks: taskManager.completedTasks())
+		taskManager.completedTasks().sorted(by: sortMethod)
 	}
 
 	func uncompletedTasks() -> [Task] {
-		sorted(tasks: taskManager.uncompletedTasks())
+		taskManager.uncompletedTasks().sorted(by: sortMethod)
+	}
+
+	func addTask(task: Task) {
+		taskManager.addTask(task: task)
 	}
 
 	func addTasks(tasks: [Task]) {
 		taskManager.addTasks(tasks: tasks)
-	}
-}
-
-private extension OrderedTaskManager {
-	func sorted(tasks: [Task]) -> [Task] {
-		tasks.sorted {
-			if let task0 = $0 as? ImportantTask, let task1 = $1 as? ImportantTask {
-				return task0.taskPriority.rawValue > task1.taskPriority.rawValue
-			}
-
-			if $0 is ImportantTask, $1 is RegularTask {
-				return true
-			}
-
-			return false
-		}
 	}
 }

@@ -7,23 +7,48 @@
 
 import Foundation
 
-class Task {
-	var title: String
-	var completed = false
+enum Task {
+	case regular(RegularTask)
+	case important(ImportantTask)
+}
 
-	init(title: String, completed: Bool = false) {
-		self.title = title
-		self.completed = completed
+extension Task {
+	var completed: Bool {
+		switch self {
+		case .regular(let regularTask):
+			return regularTask.completed
+		case .important(let importantTask):
+			return importantTask.completed
+		}
+	}
+
+	var title: String {
+		switch self {
+		case .regular(let regularTask):
+			return regularTask.title
+		case .important(let importantTask):
+			return importantTask.title
+		}
 	}
 }
 
-final class RegularTask: Task { }
+struct RegularTask {
+	var title: String
+	var completed = false
+}
 
-final class ImportantTask: Task {
+struct ImportantTask {
 	enum TaskPriority: Int {
 		case low
 		case medium
 		case high
+	}
+
+	enum TaskStatus {
+		case notStarted
+		case completed
+		case canceled
+		case paused
 	}
 
 	var deadLine: Date {
@@ -39,10 +64,47 @@ final class ImportantTask: Task {
 
 	var date: Date
 	var taskPriority: TaskPriority
+	var title: String
+	var status: TaskStatus = .notStarted
+//	var completed = false
+}
 
-	init(title: String, date: Date, taskPriority: TaskPriority) {
-		self.taskPriority = taskPriority
-		self.date = date
-		super.init(title: title)
+extension ImportantTask {
+	var completed: Bool {
+		status == .completed
+	}
+}
+
+extension RegularTask: Equatable {
+	static func == (lhs: RegularTask, rhs: RegularTask) -> Bool {
+		return lhs.title == rhs.title && lhs.completed == rhs.completed
+	}
+}
+
+extension ImportantTask: Equatable {
+	static func == (lhs: ImportantTask, rhs: ImportantTask) -> Bool {
+		return lhs.title == rhs.title &&
+		lhs.date == rhs.date &&
+		lhs.taskPriority == rhs.taskPriority &&
+		lhs.status == rhs.status
+	}
+}
+
+extension Task: Equatable {
+	static func == (lhs: Task, rhs: Task) -> Bool {
+		return lhs == rhs
+	}
+}
+
+extension Task: Comparable {
+	static func < (lhs: Task, rhs: Task) -> Bool {
+		switch (lhs, rhs) {
+		case (.important(let leftImportant), .important(let rightImportant)):
+			return leftImportant.taskPriority.rawValue > rightImportant.taskPriority.rawValue
+		case (.important, .regular):
+			return true
+		default:
+			return false
+		}
 	}
 }

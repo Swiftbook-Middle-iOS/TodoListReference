@@ -5,8 +5,6 @@
 //  Created by Александр Касьянов on 18.11.2023.
 //
 
-import Foundation
-
 /// Предоставляет список заданий.
 final class TaskManager {
 	private var taskList = [Task]()
@@ -32,6 +30,6 @@ final class TaskManager {
 	}
 
 	func removeTask(task: Task) {
-		taskList.removeAll { $0 === task }
+		taskList.removeAll { $0 == task }
 	}
 }

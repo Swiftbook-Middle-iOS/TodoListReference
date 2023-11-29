@@ -80,9 +80,9 @@
 			isa = PBXGroup;
 			children = (
 				BD9029492B093155009EFA50 /* ITaskManager.swift */,
+				BD301BA92B1787B2004C5A23 /* OrderedTaskManager.swift */,
 				BD9029472B0915EB009EFA50 /* TaskManager.swift */,
 				BD9029452B091308009EFA50 /* Tasks.swift */,
-				BD301BA92B1787B2004C5A23 /* OrderedTaskManager.swift */,
 			);
 			path = BL;
 			sourceTree = "<group>";

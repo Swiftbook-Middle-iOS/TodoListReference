@@ -10,6 +10,7 @@ protocol ITaskManager {
 	func allTasks() -> [Task]
 	func completedTasks() -> [Task]
 	func uncompletedTasks() -> [Task]
+	func addTask(task: Task)
 	func addTasks(tasks: [Task])
 }
 
