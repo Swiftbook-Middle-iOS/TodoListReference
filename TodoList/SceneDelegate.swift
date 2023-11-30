@@ -2,6 +2,7 @@
 //  SceneDelegate.swift
 
 import UIKit
+import TaskManagerPackage
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -34,11 +35,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	func buildTaskManager() -> ITaskManager {
 		let taskManager = OrderedTaskManager(taskManager: TaskManager())
 		let tasks = [
-			ImportantTask(title: "Do homework", date: Date(), taskPriority: .high),
+			ImportantTask(title: "Do homework", taskPriority: .high),
 			RegularTask(title: "Do Workout", completed: true),
-			ImportantTask(title: "Write new tasks", date: Date(), taskPriority: .low),
+			ImportantTask(title: "Write new tasks", taskPriority: .low, createDate: Date()),
 			RegularTask(title: "Solve 3 algorithms"),
-			ImportantTask(title: "Go shopping", date: Date(), taskPriority: .medium)
+			ImportantTask(title: "Go shopping", taskPriority: .medium, createDate: Date())
 		]
 		taskManager.addTasks(tasks: tasks)
 
