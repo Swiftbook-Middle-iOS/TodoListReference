@@ -7,11 +7,21 @@
 
 import UIKit
 
+protocol ILoginViewController: AnyObject {
+	/// Метод отрисовки информации на экране.
+	/// - Parameter ViewData: данные для отрисовки на экране.
+	func render(viewData: LoginModel.ViewData)
+
+	/// Метод реализации открытия нового экрана, за неимением роутера.
+	/// - Parameter screen: Какой экран надо отобразить.
+	func show(screen: UIViewController)
+}
+
 final class LoginViewController: UIViewController {
 
 	// MARK: - Dependencies
 
-	private let nextScreen: UIViewController! // swiftlint:disable:this implicitly_unwrapped_optional
+	var presenter: ILoginPresenter?
 
 	// MARK: - Private properties
 
@@ -23,8 +33,7 @@ final class LoginViewController: UIViewController {
 
 	// MARK: - Initialization
 
-	init(nextScreen: UIViewController) {
-		self.nextScreen = nextScreen
+	init() {
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -37,6 +46,7 @@ final class LoginViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setup()
+		presenter?.viewIsReady()
 	}
 
 	override func viewDidLayoutSubviews() {
@@ -50,7 +60,7 @@ final class LoginViewController: UIViewController {
 private extension LoginViewController {
 	@objc
 	func login() {
-		navigationController?.pushViewController(nextScreen, animated: true)
+		presenter?.didLogin(login: textFieldLogin.text ?? "", password: textFieldPass.text ?? "")
 	}
 }
 
@@ -136,5 +146,18 @@ private extension LoginViewController {
 
 	var thirdOfTheScreen: Double {
 		return view.bounds.size.height / 3.0
+	}
+}
+
+// MARK: - ILoginViewController
+
+extension LoginViewController: ILoginViewController {
+	func show(screen: UIViewController) {
+		navigationController?.pushViewController(screen, animated: true)
+	}
+
+	func render(viewData: LoginModel.ViewData) {
+		textFieldLogin.text = viewData.login
+		textFieldPass.text = viewData.password
 	}
 }

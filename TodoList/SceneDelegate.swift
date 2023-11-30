@@ -23,12 +23,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	}
 
 	func assemblyTodoList() -> UIViewController {
-		let viewController = TodoListTableViewController(taskManager: buildTaskManager())
+		let viewController = MainViewController()
+		let presenter = MainPresenter(view: viewController, taskManager: buildTaskManager())
+		viewController.presenter = presenter
 		return viewController
 	}
 
 	func assemblyLogin() -> UIViewController {
-		let viewController = LoginViewController(nextScreen: assemblyTodoList())
+		let viewController = LoginViewController()
+		let presenter = LoginPresenter(view: viewController, nextScreen: assemblyTodoList())
+		viewController.presenter = presenter
 		return viewController
 	}
 
