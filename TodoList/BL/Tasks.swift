@@ -90,12 +90,6 @@ extension ImportantTask: Equatable {
 	}
 }
 
-extension Task: Equatable {
-	static func == (lhs: Task, rhs: Task) -> Bool {
-		return lhs == rhs
-	}
-}
-
 extension Task: Comparable {
 	static func < (lhs: Task, rhs: Task) -> Bool {
 		switch (lhs, rhs) {
