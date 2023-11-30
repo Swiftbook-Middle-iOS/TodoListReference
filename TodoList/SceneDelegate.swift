@@ -15,32 +15,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		guard let scene = (scene as? UIWindowScene) else { return }
 		let window = UIWindow(windowScene: scene)
 
-		window.rootViewController = UINavigationController(rootViewController: assembly())
+		window.rootViewController = UINavigationController(rootViewController: assemblyLogin())
 		window.makeKeyAndVisible()
 
 		self.window = window
 	}
 
-	func assembly() -> UIViewController {
-		let storyboard = UIStoryboard(name: "Main", bundle: nil)
+	func assemblyTodoList() -> UIViewController {
+		let viewController = TodoListTableViewController(taskManager: buildTaskManager())
+		return viewController
+	}
 
-		let viewController = storyboard.instantiateViewController(
-			withIdentifier: "TodoListTableViewController"
-		) as! TodoListTableViewController // swiftlint:disable:this force_cast
-
-		viewController.taskManager = buildTaskManager()
-
+	func assemblyLogin() -> UIViewController {
+		let viewController = LoginViewController(nextScreen: assemblyTodoList())
 		return viewController
 	}
 
 	func buildTaskManager() -> ITaskManager {
 		let taskManager = OrderedTaskManager(taskManager: TaskManager())
-		let tasks: [Task] = [
-			.important(ImportantTask(date: Date(), taskPriority: .high, title: "Do homework")),
-			.regular(RegularTask(title: "Do Workout", completed: true)),
-			.important(ImportantTask(date: Date(), taskPriority: .low, title: "Write new tasks")),
-			.regular(RegularTask(title: "Solve 3 algorithms")),
-			.important(ImportantTask(date: Date(), taskPriority: .medium, title: "Go shopping"))
+		let tasks = [
+			ImportantTask(title: "Do homework", date: Date(), taskPriority: .high),
+			RegularTask(title: "Do Workout", completed: true),
+			ImportantTask(title: "Write new tasks", date: Date(), taskPriority: .low),
+			RegularTask(title: "Solve 3 algorithms"),
+			ImportantTask(title: "Go shopping", date: Date(), taskPriority: .medium)
 		]
 		taskManager.addTasks(tasks: tasks)
 

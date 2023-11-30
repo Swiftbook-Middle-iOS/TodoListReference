@@ -30,6 +30,6 @@ final class TaskManager {
 	}
 
 	func removeTask(task: Task) {
-		taskList.removeAll { $0 == task }
+		taskList.removeAll { $0 === task }
 	}
 }

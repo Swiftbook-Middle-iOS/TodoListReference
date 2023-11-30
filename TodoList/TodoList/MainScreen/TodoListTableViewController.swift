@@ -4,7 +4,16 @@
 import UIKit
 
 final class TodoListTableViewController: UITableViewController {
-	var taskManager: ITaskManager! // swiftlint:disable:this implicitly_unwrapped_optional
+	private var taskManager: ITaskManager! // swiftlint:disable:this implicitly_unwrapped_optional
+
+	init(taskManager: ITaskManager) {
+		super.init(nibName: nil, bundle: nil)
+		self.taskManager = taskManager
+	}
+
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -39,9 +48,10 @@ private extension TodoListTableViewController {
 	func configureCell(_ cell: UITableViewCell, with task: Task) {
 		var contentConfiguration = cell.defaultContentConfiguration()
 
-		if case let .important(task) = task {
+		if let task = task as? ImportantTask {
 			contentConfiguration.secondaryText = "Deadline: \(task.deadLine.formatted())"
 		}
+
 		contentConfiguration.text = task.title
 		cell.contentConfiguration = contentConfiguration
 	}
