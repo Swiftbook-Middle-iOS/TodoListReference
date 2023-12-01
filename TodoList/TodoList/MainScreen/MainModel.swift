@@ -11,8 +11,13 @@ import Foundation
 enum MainModel {
 	/// Структура, описывающая главный экран приложения TodoList
 	struct ViewData {
-		/// Содержит в себе список задач для отображения
-		let tasks: [Task]
+		/// Содержит в себе список задач для отображения, разделённые на секции
+		let tasksBySections: [Section]
+
+		struct Section {
+			let title: String
+			let tasks: [Task]
+		}
 
 		/// Перечисление, представляющее наши задачи для отображения на экране
 		enum Task {

@@ -18,7 +18,7 @@ final class MainViewController: UITableViewController {
 	var presenter: IMainPresenter?
 
 	// MARK: - Private properties
-	private var viewData = MainModel.ViewData(tasks: [])
+	private var viewData = MainModel.ViewData(tasksBySections: [])
 
 	// MARK: - Initialization
 	init() {
@@ -39,8 +39,18 @@ final class MainViewController: UITableViewController {
 
 // MARK: - UITableView
 extension MainViewController {
+
+	override func numberOfSections(in tableView: UITableView) -> Int {
+		viewData.tasksBySections.count
+	}
+
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		viewData.tasksBySections[section].title
+	}
+
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		viewData.tasks.count
+		let section = viewData.tasksBySections[section]
+		return section.tasks.count
 	}
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -56,6 +66,7 @@ extension MainViewController {
 }
 
 // MARK: - UI setup
+
 private extension MainViewController {
 
 	private func setup() {
@@ -65,7 +76,9 @@ private extension MainViewController {
 	}
 
 	func getTaskForIndex(_ indexPath: IndexPath) -> MainModel.ViewData.Task {
-		viewData.tasks[indexPath.row]
+		let tasks = viewData.tasksBySections[indexPath.section].tasks
+		let task = tasks[indexPath.row]
+		return task
 	}
 
 	func configureCell(_ cell: UITableViewCell, with task: MainModel.ViewData.Task) {

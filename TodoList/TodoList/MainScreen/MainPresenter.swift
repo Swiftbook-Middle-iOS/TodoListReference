@@ -20,21 +20,19 @@ protocol IMainPresenter {
 
 /// Презентер для главного экрана
 class MainPresenter: IMainPresenter {
-	// MARK: - Dependencies
-	private var taskManager: ITaskManager
+
+	private var sectionManager: ISectionForTaskManagerAdapter
 	private weak var view: IMainViewController! // swiftlint:disable:this implicitly_unwrapped_optional
 
-	// MARK: - Initialization
 	/// Инициализатор презентера
 	/// - Parameters:
 	///   - view: Необходимая вьюха, на которой будет выводиться информация;
 	///   - taskManager: Источник информации для заданий.
-	init(view: IMainViewController, taskManager: ITaskManager) {
+	init(view: IMainViewController, sectionManager: ISectionForTaskManagerAdapter) {
 		self.view = view
-		self.taskManager = taskManager
+		self.sectionManager = sectionManager
 	}
 
-	// MARK: - Public methods
 	/// Обработка готовности экрана для отображения информации.
 	func viewIsReady() {
 		view.render(viewData: mapViewData())
@@ -43,20 +41,36 @@ class MainPresenter: IMainPresenter {
 	/// Обработка выбранной пользователем строки таблицы.
 	/// - Parameter indexPath: Индекс, который выбрал пользователь.
 	func didTaskSelected(at indexPath: IndexPath) {
-		let task = taskManager.allTasks()[indexPath.row]
+		let section = sectionManager.getSection(forIndex: indexPath.section)
+		let task = sectionManager.getTasksForSection(section: section)[indexPath.row]
 		task.completed.toggle()
 		view.render(viewData: mapViewData())
 	}
 
-	// MARK: - Private methods
-	/// Маппинг бизнес-моделей в модель для отображения.
+	/// Мапинг бизнес-моделей в модель для отображения.
 	/// - Returns: Возвращает модель для отображения.
 	private func mapViewData() -> MainModel.ViewData {
-		let tasks = taskManager.allTasks().map { mapTaskData(task: $0) }
-		return MainModel.ViewData(tasks: tasks)
+		var sections = [MainModel.ViewData.Section]()
+		for section in sectionManager.getSections() {
+			let sectionData = MainModel.ViewData.Section(
+				title: section.title,
+				tasks: mapTasksData(tasks: sectionManager.getTasksForSection(section: section) )
+			)
+
+			sections.append(sectionData)
+		}
+
+		return MainModel.ViewData(tasksBySections: sections)
 	}
 
-	/// Маппинг одной задачи из бизнес-модели в задачу для отображения.
+	/// Мапинг задач из бизнес-модели в задачи для отображения
+	/// - Parameter tasks: задачи для преобразования
+	/// - Returns: задачи для отображения
+	private func mapTasksData(tasks: [Task]) -> [MainModel.ViewData.Task] {
+		tasks.map { mapTaskData(task: $0) }
+	}
+
+	/// Маппинг одной задачи из бизнес-модели в задачу для отображения
 	/// - Parameter task: Задача для преобразования.
 	/// - Returns: Преобразованный результат.
 	private func mapTaskData(task: Task) -> MainModel.ViewData.Task {
