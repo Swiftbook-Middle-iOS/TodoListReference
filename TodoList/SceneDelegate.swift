@@ -22,17 +22,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		self.window = window
 	}
 
+	func assemblyLogin() -> UIViewController {
+		let viewController = LoginViewController()
+		let todoListAssembler = TodoListAssembler(repository: TaskRepositoryStub())
+		let presenter = LoginPresenter(view: viewController, nextScreen: todoListAssembler.assemblyTodoList())
+		viewController.presenter = presenter
+		return viewController
+	}
+}
+
+final class TodoListAssembler {
+
+	private let repository: ITaskRepository
+
+	init(repository: ITaskRepository) {
+		self.repository = repository
+	}
+
 	func assemblyTodoList() -> UIViewController {
 		let viewController = MainViewController()
 		let sectionManager = SectionForTaskManagerAdapter(taskManager: buildTaskManager())
 		let presenter = MainPresenter(view: viewController, sectionManager: sectionManager)
-		viewController.presenter = presenter
-		return viewController
-	}
-
-	func assemblyLogin() -> UIViewController {
-		let viewController = LoginViewController()
-		let presenter = LoginPresenter(view: viewController, nextScreen: assemblyTodoList())
 		viewController.presenter = presenter
 		return viewController
 	}
